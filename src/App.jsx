@@ -14,7 +14,7 @@ function App() {
   return (
     <BrowserRouter>
     
-    <nav className="navbar navbar-expand-lg bg-body-tertiary mb-4">
+    <nav className="navbar navbar-expand-sm ">
   <div className="container-fluid">
     <NavLink className="navbar-brand" to="/">Navbar</NavLink>
     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">

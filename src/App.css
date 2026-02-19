@@ -3,7 +3,10 @@ body{
     color: darkgoldenrod;
     font: georgia, fantasy, serif, cursive;
 }
-Navbar{
-    background-color: #3d060a;
+
+.navbar{
+    background-color: darkgoldenrod;
+    color:#3d060a;
+    font: georgia, fantasy, serif, cursive;
 }
     
