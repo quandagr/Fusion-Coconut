@@ -1,17 +1,24 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
+import React, { use } from 'react'
+import { useState } from 'react'
 import { supabase } from '../services/supabase'
 
 
 export const OrderPage = () => {
     const [name, setName] = useState("");
     const [order_details, setOrderDetails] = useState("");
-    function handleSubmit(event) {
+   async function handleSubmit(event) {
         event.preventDefault();
-        alert(`Order submitted successfully!\nName: ${name}\nOrder Details: ${order_details}`);
+        const { error } = await supabase.from('orders').insert({ customer_name: name, order_details: order_details });
+        if (error) {
+            alert(`Error submitting order: ${error.message}`);
+        } else {
+            alert(`Order submitted successfully!\nName: ${name}\nOrder Details: ${order_details}`);
+        }
         setName("");
         setOrderDetails("");
     }
+ 
+    
         // Here you can add code to send the order details to your backend or database
   return (
     <div className="container mt-4"> <h1 className="text-center">Customer Order Form</h1>
@@ -28,6 +35,7 @@ export const OrderPage = () => {
   </div>
   <button type="submit" className="btn btn-primary">Submit Order</button>
 </form>
+
     </div>
 
   )

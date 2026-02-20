@@ -7,6 +7,7 @@ import { Home } from './Pages/Home'
 import { BrowserRouter as Router, Routes, Route, BrowserRouter, Link, NavLink } from 'react-router-dom'
 import { Navigate } from 'react-router-dom'
 import { OrderPage } from './Pages/orderPage'
+import { Chatbot } from './Pages/Chatbot'
 
 function App() {
   
@@ -50,6 +51,7 @@ function App() {
           <Route path="*" element={<Navigate to="/menu" replace />} /> 
           <Route path="/" element={<Home />} /> 
           <Route path="/order" element={<OrderPage />} />
+           <Route path="/chatbot" element={<Chatbot />} /> 
       </Routes>
     </BrowserRouter>
   )
