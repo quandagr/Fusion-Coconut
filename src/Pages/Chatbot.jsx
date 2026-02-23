@@ -2,55 +2,40 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../services/supabase";
 
 
-    export const Chatbot = async() => {
+    export const Chatbot = () => {
      const [input, setInput] = useState("");
-    //  const getProducts = async () => {
+    const [products, setProducts] = useState("");
 
         const url = import.meta.env.VITE_SUPABASE_URL;
         const Token = import.meta.env.VITE_TOKEN;
+       
 
+     const getProducts = async () => {
+
+        const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+        const url = import.meta.env.VITE_SUPABASE_URL;
         
             const response = await fetch(url, {
                 method:"GET",
                 headers: {
-                    "apikey": Token,
+                    "apikey": supabaseKey,
                     // "Content-Type": "application/json",
                 },
             })
             const data = await response.json();
         let prods=""
-        data.result.forEach((prod) => {
-            prods += `Name: ${prod.name}, Price: ${prod.price}\n`;
-        });
-    };
-    function chatbot() {
-        const [products, setProducts] = useState("");
-    setProducts(prods);
-    useEffect(() => {
-
-     const getProducts=async()=>{
-        const url = import.meta.env.VITE_SUPABASE_URL;
-        const Token = import.meta.env.VITE_TOKEN;
-
-        
-            const response = await fetch(url, {
-                method:"GET",
-                headers: {
-                    "apikey": Token,
-                    // "Content-Type": "application/json",
-                },
-            })
-            const data = await response.json();
-        let prods=""
-        data.result.forEach((prod) => {
+        data.forEach((prod) => {
             prods += `Name: ${prod.name}, Price: ${prod.price}\n`;
         });
         setProducts(prods);
-     };
+    };
+
+    useEffect(() => {
      getProducts();
-    }, []);
 
+     },[]);
 
+    
   const [messages, setMessages] = useState([]);
   let questions = "";
   
@@ -82,9 +67,11 @@ Do include emojis in your responses to make them more friendly and engaging. Use
 
  console.log(instructions);
 
-  const onSubmitForm = async () => {
+  const onSubmitForm = async (event) => {
         const url = import.meta.env.VITE_GEMINI_URL;
         const Token = import.meta.env.VITE_TOKEN;
+
+       event.preventDefault();
 
         const history = messages.concat();
         history.push({ role: "system", content: instructions });
@@ -107,23 +94,20 @@ Do include emojis in your responses to make them more friendly and engaging. Use
         },
         body: JSON.stringify({
             model: "gemini-1.5-pro",
-            contents: apiHistory
+            contents: apiHistory,
+            system_instruction: {
+                parts: [{ text: instructions }]
+            },
+         
         })
     });
 
-    {
-        system_instruction:{
-            parts:[{text: instructions  }] }
-        user_input:{
-            parts:[{text: questions  }] }
-            contents: apiHistory
-    }
+    
 const data = await result.json();
     console.log(data);
-        };
-
+        
     const answer = data.candidates[0].content.parts[0].text;
-    console.log(data);
+    console.log(answer);
     const response = { role: "model",text: answer };
     // const response = {
     //     role: "model",
@@ -133,16 +117,15 @@ const data = await result.json();
     setLoading(false);
 
     
-    
+   }; 
   
   return (
     <div className="container mt-4">
       <h1 className="text-center">Chatbot</h1>
       <p className="text-center">
-        Ask me anything about our menu, hours, or location!
-      </p>
+        Ask me anything about our menu, hours, or location!</p>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={onSubmitForm}>
         <div className="mb-3">
           <label htmlFor="messages" className="form-label">
             Message
@@ -153,19 +136,19 @@ const data = await result.json();
             rows="3"
             aria-describedby="messageHelp"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={onChangeQuestion}
           />
           <div id="messageHelp" className="form-text">
             Please enter your message.
           </div>
         </div>
-        <button type="submit" className="btn btn-primary">
+        <button className="btn btn-primary">
           Send
         </button>
       </form>
     </div>
     );
 };
-    }
+    
 
     export default Chatbot;
