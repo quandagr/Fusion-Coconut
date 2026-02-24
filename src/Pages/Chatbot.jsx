@@ -11,9 +11,9 @@ import { supabase } from "../services/supabase";
        
 
      const getProducts = async () => {
-
+      const url = import.meta.env.VITE_SUPABASE_URL;
         const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-        const url = import.meta.env.VITE_SUPABASE_URL;
+        
         
             const response = await fetch(url, {
                 method:"GET",
