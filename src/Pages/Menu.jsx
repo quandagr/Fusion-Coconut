@@ -44,11 +44,11 @@ const PriceItems = menuItems.filter(item => item.category === 'Price');
             <img src={item.image_url} className='card-img-top' alt={item.name} />
             <div className='card-body'>
             <div className='card 
-text-center'>
+            text-center'>
             <h3>{item.name}</h3>
             <p>${item.price}</p>
             </div>
-</div>
+        </div>
             </div>
         </div>
       ))}
