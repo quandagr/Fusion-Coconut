@@ -37,10 +37,10 @@ import { supabase } from "../services/supabase";
 
     
   const [messages, setMessages] = useState([]);
-  let questions = "";
+  const [question, setQuestion] = useState("");
   
   const onChangeQuestion = (event) => {
-    questions = event.target.value;
+    setQuestion(event.target.value);
   };
 
 const [loading, setLoading] = useState(false);
@@ -49,6 +49,7 @@ const instructions = `
 You're a helpful waiter for a restaurant called Fusion-Coconut. You can answer questions about the menu, hours, and location. If you don't know the answer, say you don't know.
 Here is the menu:
 ${products}
+
 
 You are going to take the orders from the customers and save them in a database. The orders should be in the following format:
 Customer Name: [customer name]
@@ -65,7 +66,7 @@ Don't use any formatting such as markdown or HTML in your responses. Only respon
 Do include emojis in your responses to make them more friendly and engaging. Use emojis that are relevant to the restaurant industry, such as food and drink emojis, to enhance the customer experience. Always use emojis in a way that complements your responses and adds to the overall tone of your messages. Do not overuse emojis or use them in a way that is inappropriate or unprofessional. Always be polite and helpful in your responses, while also using emojis to create a friendly and welcoming atmosphere for the customers.
 `;
 
- console.log(instructions);
+
 
   const onSubmitForm = async (event) => {
         const url = import.meta.env.VITE_GEMINI_URL;
@@ -74,11 +75,12 @@ Do include emojis in your responses to make them more friendly and engaging. Use
        event.preventDefault();
 
         const history = messages.concat();
-        history.push({ role: "system", content: instructions });
-        history.push({ role: "user", content: questions });
+        // history.push({ role: "system", content: instructions });
+        history.push({ role: "user", text: question });
         setMessages(history);
 
-        event
+        setQuestion("");
+        // event
     setLoading(true);
 
     const apiHistory = history.map(item => ({
@@ -90,10 +92,10 @@ Do include emojis in your responses to make them more friendly and engaging. Use
     const result = await fetch(url, {
         method: "POST",
         headers: {
-            ' x-goog-api-key': Token,
+            'x-goog-api-key':Token,
         },
         body: JSON.stringify({
-            model: "gemini-1.5-pro",
+            // model: "gemini-1.5-pro",
             contents: apiHistory,
             system_instruction: {
                 parts: [{ text: instructions }]
@@ -105,7 +107,11 @@ Do include emojis in your responses to make them more friendly and engaging. Use
     
 const data = await result.json();
     console.log(data);
-        
+        if (!result.ok) {
+            console.error("Error:", data);
+            setLoading(false);
+            return;
+        }
     const answer = data.candidates[0].content.parts[0].text;
     console.log(answer);
     const response = { role: "model",text: answer };
@@ -113,7 +119,9 @@ const data = await result.json();
     //     role: "model",
     //
     history.push(response);
+
     setMessages(history);
+
     setLoading(false);
 
     
@@ -126,22 +134,23 @@ const data = await result.json();
         Ask me anything about our menu, hours, or location!</p>
 
       <form onSubmit={onSubmitForm}>
-        <div className="mb-3">
-          <label htmlFor="messages" className="form-label">
-            Message
-          </label>
-          <textarea
-            className="form-control"
-            id="message"
-            rows="3"
-            aria-describedby="messageHelp"
-            value={input}
-            onChange={onChangeQuestion}
-          />
-          <div id="messageHelp" className="form-text">
-            Please enter your message.
-          </div>
+        <label>Chat History</label>
+        <div className="mt-4 mb-3">
+          {messages.map((message, index) => (
+            <div key={index} className="mb-2">
+              <strong>{message.role}:</strong> {message.text}
+            </div>
+            
+          ))}
         </div>
+        {loading && <p>Loading...</p>}
+        <input
+          type="text"
+          className="form-label"
+          value={question}
+          onChange={onChangeQuestion}
+          placeholder="Ask me a question"
+        />
         <button className="btn btn-primary">
           Send
         </button>
