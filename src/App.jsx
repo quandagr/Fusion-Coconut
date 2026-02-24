@@ -6,7 +6,7 @@ import { Menu } from './Pages/Menu'
 import { Home } from './Pages/Home'
 import { BrowserRouter as Router, Routes, Route, BrowserRouter, Link, NavLink } from 'react-router-dom'
 import { Navigate } from 'react-router-dom'
-import { OrderPage } from './Pages/OrderPage'
+import { OrderPage } from `./Pages/OrderPage`
 import { Chatbot } from './Pages/Chatbot'
 
 function App() {
